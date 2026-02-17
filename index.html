@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HGV Take-Home Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 0;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .info-bar {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .page-content {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .holiday-pay-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .holiday-pay-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .holiday-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .holiday-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .holiday-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .holiday-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+            color: #333;
+        }
+
+        .margin-slider-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .margin-slider-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-wrapper {
+            flex: 1;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            min-width: 60px;
+            padding: 8px 12px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .slider-range {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 14px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.2s;
+        }
+
+        .calculate-btn:hover {
+            background: #45a049;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .comparison {
+            margin-top: 30px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .comparison-card {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .paye-card {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+        }
+
+        .umbrella-card {
+            background: #fff3e0;
+            border: 2px solid #FF9800;
+        }
+
+        .card-header {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-note {
+            font-size: 11px;
+            color: #999;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .difference-box {
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .difference-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .difference-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .difference-value.negative {
+            color: #f44336;
+        }
+
+        .annual-loss {
+            padding: 15px;
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            border-radius: 4px;
+            color: #c62828;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .share-hook {
+            margin-top: 15px;
+            padding: 12px;
+            background: #e3f2fd;
+            border-radius: 4px;
+            text-align: center;
+            color: #1565c0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .whats-included {
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .whats-included-header {
+            padding: 12px 15px;
+            background: #f9f9f9;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .whats-included-header:hover {
+            background: #f0f0f0;
+        }
+
+        .toggle-icon {
+            transition: transform 0.2s;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .whats-included-content {
+            padding: 15px;
+            background: white;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .whats-included-content.open {
+            display: block;
+        }
+
+        .whats-included-content ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .whats-included-content li {
+            margin-bottom: 8px;
+        }
+
+        .payslip-check {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border: 2px solid #4CAF50;
+            border-radius: 4px;
+        }
+
+        .payslip-check-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .payslip-check-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .payslip-check-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .payslip-check-item:last-child {
+            border-bottom: none;
+        }
+
+        .payslip-check-item::before {
+            content: "✓";
+            display: inline-block;
+            width: 20px;
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-bar">
+        Built by an HGV Driver
+    </div>
+    <div class="page-content">
+    <div class="container">
+        <h1>HGV Take-Home Calculator</h1>
+        
+        <div class="input-group">
+            <label for="hourlyRate">Hourly Rate (£)</label>
+            <input type="number" id="hourlyRate" placeholder="e.g., 15.50" step="0.01" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="hoursWorked">Hours Worked (per week)</label>
+            <input type="number" id="hoursWorked" placeholder="e.g., 40" step="0.5" min="0">
+        </div>
+
+        <div class="holiday-pay-group">
+            <label>Holiday Pay:</label>
+            <div class="holiday-options">
+                <div class="holiday-option">
+                    <input type="radio" id="holidayIncluded" name="holidayPay" value="included" checked>
+                    <label for="holidayIncluded">Included weekly</label>
+                </div>
+                <div class="holiday-option">
+                    <input type="radio" id="holidayAccrued" name="holidayPay" value="accrued">
+                    <label for="holidayAccrued">Accrued (held back)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="margin-slider-group">
+            <label>Umbrella Margin (weekly):</label>
+            <div class="slider-container">
+                <div class="slider-wrapper">
+                    <input type="range" id="marginSlider" min="15" max="35" value="17" step="1">
+                    <div class="slider-range">
+                        <span>£15</span>
+                        <span>£35</span>
+                    </div>
+                </div>
+                <div class="slider-value" id="marginValue">£17</div>
+            </div>
+        </div>
+
+        <button class="calculate-btn" id="calculateBtn">Calculate</button>
+
+        <div class="comparison" id="comparison" style="display: none;">
+            <div class="comparison-grid">
+                <div class="comparison-card paye-card">
+                    <div class="card-header">PAYE Take Home</div>
+                    <div class="card-value" id="payeTakeHome">£0.00</div>
+                </div>
+                
+                <div class="comparison-card umbrella-card">
+                    <div class="card-header">Umbrella Take Home</div>
+                    <div class="card-value" id="umbrellaTakeHome">£0.00</div>
+                    <div class="card-note">Based on £17 weekly margin from sample payslip.</div>
+                </div>
+            </div>
+            
+            <div class="difference-box">
+                <div class="difference-label">Difference:</div>
+                <div class="difference-value" id="differenceValue">£0.00 per week</div>
+            </div>
+            
+            <div class="annual-loss" id="annualLoss">
+                You're losing £0 per year under umbrella.
+            </div>
+            
+            <div class="share-hook">
+                Share this with a driver on umbrella.
+            </div>
+            
+            <div class="whats-included">
+                <div class="whats-included-header" id="toggleHeader">
+                    <span>What's Included?</span>
+                    <span class="toggle-icon" id="toggleIcon">▼</span>
+                </div>
+                <div class="whats-included-content" id="toggleContent">
+                    <strong>Umbrella costs deducted from your assignment rate:</strong>
+                    <ul>
+                        <li><strong>Employer's NI:</strong> 13.8% on earnings above £175/week (£9,100/year)</li>
+                        <li><strong>Apprenticeship Levy:</strong> 0.5% of total payroll (applies to umbrella companies with £3m+ payroll)</li>
+                        <li><strong>Admin/Margin Fee:</strong> Adjustable £15-35/week (use slider above to match your payslip)</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>How it works:</strong> Your client pays an assignment rate (e.g., £20/hour). The umbrella company deducts employer's NI, apprenticeship levy, and their admin fee from this rate <em>before</em> calculating your gross pay. Then income tax and employee NI are deducted from your gross pay.</p>
+                    <p style="margin-top: 10px;"><strong>PAYE difference:</strong> With PAYE employment, the employer pays these costs separately - they don't come out of your pay rate. This is why umbrella take-home is significantly lower.</p>
+                </div>
+            </div>
+            
+            <div class="payslip-check">
+                <div class="payslip-check-title">Compare this to your latest payslip:</div>
+                <ul class="payslip-check-list">
+                    <li class="payslip-check-item">Employer NI deducted?</li>
+                    <li class="payslip-check-item">Apprenticeship levy deducted?</li>
+                    <li class="payslip-check-item">Holiday accrued or paid weekly?</li>
+                    <li class="payslip-check-item">Umbrella margin?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>Note:</strong> This is an estimate based on 2024/25 UK tax rates. Actual take-home may vary. Consult a tax professional for accurate calculations.
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const hourlyRateInput = document.getElementById('hourlyRate');
+        const hoursWorkedInput = document.getElementById('hoursWorked');
+        const marginSlider = document.getElementById('marginSlider');
+        const marginValue = document.getElementById('marginValue');
+        const comparisonDiv = document.getElementById('comparison');
+        const payeTakeHomeSpan = document.getElementById('payeTakeHome');
+        const umbrellaTakeHomeSpan = document.getElementById('umbrellaTakeHome');
+        const differenceValueSpan = document.getElementById('differenceValue');
+        const annualLossDiv = document.getElementById('annualLoss');
+        const umbrellaNote = document.querySelector('.card-note');
+        
+        // Update margin value display when slider changes
+        marginSlider.addEventListener('input', (e) => {
+            marginValue.textContent = `£${e.target.value}`;
+        });
+
+        // 2024/25 UK Tax Rates (weekly thresholds)
+        const PERSONAL_ALLOWANCE_WEEKLY = 242.31; // £12,570 / 52
+        const BASIC_RATE_THRESHOLD_WEEKLY = 967.31; // £50,270 / 52
+        const BASIC_TAX_RATE = 0.20;
+        const HIGHER_TAX_RATE = 0.40;
+        
+        // National Insurance (2024/25)
+        const NI_THRESHOLD_WEEKLY = 242; // £12,570 / 52
+        const NI_RATE = 0.08; // 8% above threshold (employee)
+        
+        // Umbrella company costs
+        const EMPLOYER_NI_RATE = 0.138; // 13.8% employer's NI
+        const EMPLOYER_NI_THRESHOLD_WEEKLY = 175; // £9,100 / 52
+        const APPRENTICESHIP_LEVY_RATE = 0.005; // 0.5% of payroll
+        
+        // Holiday pay
+        const HOLIDAY_PAY_RATE = 0.1207; // 12.07% for accrued holiday pay
+
+        function calculateTakeHome(assignmentRate, isUmbrella = false, holidayAccrued = false, umbrellaMargin = 0) {
+            let grossPay = assignmentRate;
+            
+            // For umbrella: deduct employer costs from assignment rate FIRST
+            if (isUmbrella) {
+                // Calculate employer's NI
+                let employerNI = 0;
+                if (assignmentRate > EMPLOYER_NI_THRESHOLD_WEEKLY) {
+                    employerNI = (assignmentRate - EMPLOYER_NI_THRESHOLD_WEEKLY) * EMPLOYER_NI_RATE;
+                }
+                
+                // Calculate apprenticeship levy (0.5% of total payroll)
+                const apprenticeshipLevy = assignmentRate * APPRENTICESHIP_LEVY_RATE;
+                
+                // Deduct employer costs and admin fee from assignment rate to get gross pay
+                grossPay = assignmentRate - employerNI - apprenticeshipLevy - umbrellaMargin;
+            }
+            
+            // If holiday pay is accrued (held back), deduct 12.07% before tax
+            if (holidayAccrued) {
+                const holidayPayDeduction = grossPay * HOLIDAY_PAY_RATE;
+                grossPay = grossPay - holidayPayDeduction;
+            }
+            
+            // Calculate Income Tax (on gross pay)
+            let incomeTax = 0;
+            if (grossPay > PERSONAL_ALLOWANCE_WEEKLY) {
+                const taxableIncome = grossPay - PERSONAL_ALLOWANCE_WEEKLY;
+                if (grossPay <= BASIC_RATE_THRESHOLD_WEEKLY) {
+                    incomeTax = taxableIncome * BASIC_TAX_RATE;
+                } else {
+                    const basicRateIncome = BASIC_RATE_THRESHOLD_WEEKLY - PERSONAL_ALLOWANCE_WEEKLY;
+                    const higherRateIncome = grossPay - BASIC_RATE_THRESHOLD_WEEKLY;
+                    incomeTax = (basicRateIncome * BASIC_TAX_RATE) + (higherRateIncome * HIGHER_TAX_RATE);
+                }
+            }
+
+            // Calculate Employee National Insurance (on gross pay)
+            let nationalInsurance = 0;
+            if (grossPay > NI_THRESHOLD_WEEKLY) {
+                nationalInsurance = (grossPay - NI_THRESHOLD_WEEKLY) * NI_RATE;
+            }
+
+            // Calculate Take-Home
+            return grossPay - incomeTax - nationalInsurance;
+        }
+
+        function calculate() {
+            const hourlyRate = parseFloat(hourlyRateInput.value) || 0;
+            const hoursWorked = parseFloat(hoursWorkedInput.value) || 0;
+            const holidayAccrued = document.querySelector('input[name="holidayPay"]:checked').value === 'accrued';
+            const umbrellaMargin = parseFloat(marginSlider.value);
+
+            if (hourlyRate <= 0 || hoursWorked <= 0) {
+                comparisonDiv.style.display = 'none';
+                return;
+            }
+
+            // Assignment rate (what client pays)
+            const assignmentRate = hourlyRate * hoursWorked;
+            
+            // Calculate both PAYE and Umbrella
+            // PAYE: assignment rate = gross pay (no employer costs deducted)
+            const payeTakeHome = calculateTakeHome(assignmentRate, false, holidayAccrued, 0);
+            
+            // Umbrella: employer costs deducted from assignment rate before calculating take-home
+            const umbrellaTakeHome = calculateTakeHome(assignmentRate, true, holidayAccrued, umbrellaMargin);
+            
+            // Update transparency note with current margin
+            umbrellaNote.textContent = `Based on £${umbrellaMargin} weekly margin.`;
+            
+            // Calculate difference
+            const difference = payeTakeHome - umbrellaTakeHome;
+            const annualDifference = difference * 52;
+            
+            // Display Results
+            payeTakeHomeSpan.textContent = `£${payeTakeHome.toFixed(0)}`;
+            umbrellaTakeHomeSpan.textContent = `£${umbrellaTakeHome.toFixed(0)}`;
+            
+            if (difference >= 0) {
+                differenceValueSpan.textContent = `+£${difference.toFixed(0)} per week`;
+                differenceValueSpan.classList.remove('negative');
+                annualLossDiv.textContent = `Estimated difference: £${annualDifference.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} per year.`;
+            } else {
+                differenceValueSpan.textContent = `£${difference.toFixed(0)} per week`;
+                differenceValueSpan.classList.add('negative');
+                annualLossDiv.textContent = `Estimated difference: £${Math.abs(annualDifference).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} per year.`;
+            }
+            
+            comparisonDiv.style.display = 'block';
+        }
+
+        const calculateBtn = document.getElementById('calculateBtn');
+        
+        calculateBtn.addEventListener('click', calculate);
+        
+        // Allow Enter key to trigger calculation
+        hourlyRateInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+        hoursWorkedInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+        
+        // Toggle What's Included section
+        const toggleHeader = document.getElementById('toggleHeader');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const toggleContent = document.getElementById('toggleContent');
+        
+        toggleHeader.addEventListener('click', () => {
+            toggleContent.classList.toggle('open');
+            toggleIcon.classList.toggle('open');
+        });
+    </script>
+</body>
+</html>
