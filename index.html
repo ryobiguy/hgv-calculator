@@ -412,8 +412,13 @@
         <h1>HGV Take-Home Calculator</h1>
         
         <div class="input-group">
-            <label for="hourlyRate">Hourly Rate (£)</label>
-            <input type="number" id="hourlyRate" placeholder="e.g., 15.50" step="0.01" min="0">
+            <label for="payeRate">PAYE Rate (£/hour)</label>
+            <input type="number" id="payeRate" placeholder="e.g., 15.50" step="0.01" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="umbrellaRate">Umbrella Rate (£/hour)</label>
+            <input type="number" id="umbrellaRate" placeholder="e.g., 20.00" step="0.01" min="0">
         </div>
 
         <div class="input-group">
@@ -513,7 +518,8 @@
     </div>
 
     <script>
-        const hourlyRateInput = document.getElementById('hourlyRate');
+        const payeRateInput = document.getElementById('payeRate');
+        const umbrellaRateInput = document.getElementById('umbrellaRate');
         const hoursWorkedInput = document.getElementById('hoursWorked');
         const marginSlider = document.getElementById('marginSlider');
         const marginValue = document.getElementById('marginValue');
@@ -595,25 +601,29 @@
         }
 
         function calculate() {
-            const hourlyRate = parseFloat(hourlyRateInput.value) || 0;
+            const payeRate = parseFloat(payeRateInput.value) || 0;
+            const umbrellaRate = parseFloat(umbrellaRateInput.value) || 0;
             const hoursWorked = parseFloat(hoursWorkedInput.value) || 0;
             const holidayAccrued = document.querySelector('input[name="holidayPay"]:checked').value === 'accrued';
             const umbrellaMargin = parseFloat(marginSlider.value);
 
-            if (hourlyRate <= 0 || hoursWorked <= 0) {
+            if ((payeRate <= 0 && umbrellaRate <= 0) || hoursWorked <= 0) {
                 comparisonDiv.style.display = 'none';
                 return;
             }
 
-            // Assignment rate (what client pays)
-            const assignmentRate = hourlyRate * hoursWorked;
+            // Calculate PAYE assignment rate
+            const payeAssignmentRate = payeRate * hoursWorked;
             
-            // Calculate both PAYE and Umbrella
+            // Calculate Umbrella assignment rate
+            const umbrellaAssignmentRate = umbrellaRate * hoursWorked;
+            
+            // Calculate both PAYE and Umbrella with their respective rates
             // PAYE: assignment rate = gross pay (no employer costs deducted)
-            const payeTakeHome = calculateTakeHome(assignmentRate, false, holidayAccrued, 0);
+            const payeTakeHome = calculateTakeHome(payeAssignmentRate, false, holidayAccrued, 0);
             
             // Umbrella: employer costs deducted from assignment rate before calculating take-home
-            const umbrellaTakeHome = calculateTakeHome(assignmentRate, true, holidayAccrued, umbrellaMargin);
+            const umbrellaTakeHome = calculateTakeHome(umbrellaAssignmentRate, true, holidayAccrued, umbrellaMargin);
             
             // Update transparency note with current margin
             umbrellaNote.textContent = `Based on £${umbrellaMargin} weekly margin.`;
@@ -644,7 +654,10 @@
         calculateBtn.addEventListener('click', calculate);
         
         // Allow Enter key to trigger calculation
-        hourlyRateInput.addEventListener('keypress', (e) => {
+        payeRateInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+        umbrellaRateInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') calculate();
         });
         hoursWorkedInput.addEventListener('keypress', (e) => {
